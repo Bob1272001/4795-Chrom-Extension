@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "QR Code Scanner 4795",
+  "version": "1.0",
+  "description": "A simple QR code scanner using the camera",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "Icons/4795.png",
+      "48": "Icons/4795.png",
+      "128": "Icons/4795.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "videoCapture"
+  ]
+}
