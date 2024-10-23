@@ -71,8 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
             qrData.SpeakerTeleop,
             qrData.SpeakerTeleopMissed,
             qrData.totalTeleopMadeShots,
-            qrData.Defense,
-            qrData.Penalties,
             qrData.Parked,   
             qrData.Climbed,
             qrData.Trap,
