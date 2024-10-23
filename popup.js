@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
           // Create a tab-separated string for spreadsheet pasting, with fields that fit around dharmas spreadsheet
           const formattedData = [
             qrData.Match,
-            qrData.Mobility,  
             '', '', '', '',
+            qrData.Mobility,  
             qrData.Amp,
             qrData.AmpMissed,
             qrData.Speaker,
