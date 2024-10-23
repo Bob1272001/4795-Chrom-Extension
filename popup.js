@@ -41,68 +41,74 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function scanQRCode() {
       if (!scanningPaused && video.readyState === video.HAVE_ENOUGH_DATA) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, canvas.width, canvas.height, {
-            inversionAttempts: 'attemptBoth',
-        });
-    
-        if (code) {
-          result.textContent = 'QR Code detected and parsed successfully';
-          const qrData = JSON.parse(code.data);
-    
-          // Create a tab-separated string for spreadsheet pasting, with fields that fit around dharmas spreadsheet
-          const formattedData = [
-            qrData.Match,
-            '', '', '', '',
-            qrData.Mobility,  
-            qrData.Amp,
-            qrData.AmpMissed,
-            qrData.Speaker,
-            qrData.SpeakerMissed,
-            qrData.totalAutoMadeShots,
-            qrData.AmpTeleop,
-            qrData.AmpTeleopMissed,
-            qrData.SpeakerTeleop,
-            qrData.SpeakerTeleopMissed,
-            qrData.totalTeleopMadeShots,
-            qrData.Parked,   
-            qrData.Climbed,
-            qrData.Trap,
-            qrData.Disabled,
-            qrData.UnderStage,
-            qrData.Comments
-          ].join('\t');
-          
-    
-          // Copy the formatted data to clipboard
-          navigator.clipboard.writeText(formattedData).then(function() {
-            result.textContent += ' (Data copied to clipboard)';
-          }).catch(function() {
-            result.textContent += ' (Failed to copy data to clipboard)';
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, canvas.width, canvas.height, {
+              inversionAttempts: 'attemptBoth',
           });
-    
-          // Display the team number from the QR code
-          const teamDisplay = document.getElementById('teamDisplay');
-          if (teamDisplay) {
-            teamDisplay.textContent = `Scanned Team: ${qrData.team}`;
+  
+          if (code) {
+              result.textContent = 'QR Code detected and parsed successfully';
+              let qrData;
+              try {
+                  // Sanitize the QR code data by removing non-printable characters
+                  const sanitizedData = code.data.replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+                  qrData = JSON.parse(sanitizedData); // Safely parse the QR data
+              } catch (error) {
+                  console.error("Invalid QR code JSON:", error);
+                  result.textContent = "Error: Invalid QR code data.";
+                  return;
+              }
+  
+              // Create a tab-separated string for spreadsheet pasting
+              const formattedData = [
+                  qrData.Match, '', '', '', '',  // Match number and 4 empty columns
+                  qrData.Mobility, 
+                  qrData.Amp,
+                  qrData.AmpMissed,
+                  qrData.Speaker,
+                  qrData.SpeakerMissed,
+                  qrData.totalAutoMadeShots,
+                  qrData.AmpTeleop, 
+                  qrData.AmpTeleopMissed,
+                  qrData.SpeakerTeleop, 
+                  qrData.SpeakerTeleopMissed,
+                  qrData.totalTeleopMadeShots,
+                  qrData.Parked, 
+                  qrData.Climbed, 
+                  qrData.Trap,
+                  qrData.Disabled, 
+                  qrData.UnderStage,
+                  qrData.Comments
+              ].join('\t');
+  
+              navigator.clipboard.writeText(formattedData).then(function() {
+                  result.textContent += ' (Data copied to clipboard)';
+              }).catch(function() {
+                  result.textContent += ' (Failed to copy data to clipboard)';
+              });
+  
+              const teamDisplay = document.getElementById('teamDisplay');
+              if (teamDisplay) {
+                  teamDisplay.textContent = `Scanned Team: ${qrData.team}`;
+              }
+  
+              scanningPaused = true;
+              setTimeout(() => {
+                  scanningPaused = false;
+              }, 2000);
+          } else {
+              result.textContent = 'No QR code detected';
           }
-    
-          scanningPaused = true;
-          setTimeout(() => {
-            scanningPaused = false;
-          }, 2000);
-        } else {
-          result.textContent = 'No QR code detected';
-        }
       }
       requestAnimationFrame(scanQRCode);
-    }
+  }
+  
     
   
   video.addEventListener('playing', function() {
