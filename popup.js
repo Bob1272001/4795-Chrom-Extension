@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('video');
     const result = document.getElementById('result');
+    const teamNumberDisplay = document.getElementById('team-number');
     let scanningPaused = false;
   
     const constraints = {
