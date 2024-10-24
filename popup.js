@@ -64,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
                   result.textContent = "Error: Invalid QR code data.";
                   return;
               }
+
+              teamNumberDisplay.textContent = `Scanned data for team ${qrData.team}`; 
+
   
               // Create a tab-separated string for spreadsheet pasting
               const formattedData = [
