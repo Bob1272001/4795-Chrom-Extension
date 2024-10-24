@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
               // Create a tab-separated string for spreadsheet pasting
               const formattedData = [
-                  qrData.Match, '', '', '', '',  // Match number and 4 empty columns
+                  qrData.Match, '/t', '/t', '/t', '/t',  // Match number and 4 empty columns to fit dharma's spreadsheet
                   qrData.Mobility, 
                   qrData.Amp,
                   qrData.AmpMissed,
